@@ -13,11 +13,18 @@ struct SAT{
 		s = std::vector<int>(2*n);
 	}
 
-	void add_clause(int x,int xval,int y,int yval){
-		x=(x<<1)+xval;
-		y=(y<<1)+yval;
+	void add_clause(int x, int xval, int y, int yval){
+		x = (x<<1)+xval;
+		y = (y<<1)+yval;
 		g[x^1].push_back(y);
 		g[y^1].push_back(x);
+	}
+
+	void add_impl(int x, int xval, int y, int yval){
+		x = (x<<1)+xval;
+		y = (y<<1)+yval;
+		g[x].push_back(y);
+		g[y^1].push_back(x^1);
 	}
 
 	void add_and(int x, int y){
