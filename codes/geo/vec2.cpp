@@ -6,6 +6,8 @@ struct vec2{
 	vec2(K x, K y) : x(x), y(y) {}
 	vec2 operator -(){ return vec2(-this->x, -this->y); }
 };
+std::ostream & operator <<(std::ostream &out, vec2 a){ out << "(" << a.x << ", " << a.y << ")"; return out; }
+bool operator ==(vec2 a, vec2 b) { return a.x==b.x && a.y == b.y; }
 vec2 operator +(vec2 a, vec2 b){ return vec2(a.x+b.x, a.y+b.y); }
 vec2 operator -(vec2 a, vec2 b){ return vec2(a.x-b.x, a.y-b.y); }
 vec2 operator *(K k, vec2 a){ return vec2(k*a.x, k*a.y); }
@@ -19,4 +21,12 @@ K dist2(vec2 a, vec2 b){ return len2(a-b); }
 K dist(vec2 a, vec2 b){ return len(a-b); }
 vec2 proj(vec2 w, vec2 v){ return (dot(v, w)/dot(w, w))*w; }
 K angle(vec2 a, vec2 b){ return std::acos(std::max((K)-1, std::min((K)1, dot(a, b)*(1/(len(a)*len(b)))))); }
-std::ostream & operator <<(std::ostream &out, vec2 a){ out << "(" << a.x << ", " << a.y << ")"; return out; }
+// 1 if c is to the left of (a, b)
+int side(vec2 a, vec2 b, vec2 c){
+	b = b-a;
+	c = c-a;
+	K s = det(b, c);
+	if(s > 0) return 1;
+	if(s == 0) return 0; // works if K = integer type
+	return -1;
+}
