@@ -3,29 +3,30 @@ typedef std::complex<K> CD;
 typedef std::vector<CD> VCD;
 const K PI = std::acos((K)-1);
 
-void fft(VCD &vec){
-	int n = (int)vec.size();
-	if(n == 1) return;
-	VCD even, odd;
-	even.reserve(n/2);
-	odd.reserve(n/2);
-	for(int i = 0; i < n; ++i) (i%2 == 0 ? even.push_back(vec[i]) : odd.push_back(vec[i]));
-	fft(even);
-	fft(odd);
-	CD step = CD(std::cos(PI/n*2), std::sin(PI/n*2));
-	CD w = CD(1, 0);
-	for(int i = 0; i < n/2; ++i){
-		vec[i] = even[i] + w*odd[i];
-		vec[i+n/2] = even[i] - w*odd[i];
-		w = w*step;
+void fft(VCD &a, bool inv=false){
+	int n = (int)a.size();
+	if(inv) for(CD &i : a) i = std::conj(i);
+	// bit reorder
+	for (int i = 1, j = 0; i < n; i++) {
+		int bit = n >> 1;
+		for (; j & bit; bit >>= 1) j ^= bit;
+		j ^= bit;
+		if(i < j) std::swap(a[i], a[j]);
 	}
-}
-
-void ifft(VCD &vec){
-	int n = (int)vec.size();
-	for(CD &i : vec) i = std::conj(i);
-	fft(vec);
-	for(CD &i : vec) i = std::conj(i)/CD(n, 0);
+	for(int sz = 2; sz <= n; sz *= 2){
+		CD step = CD(std::cos(PI/sz*2), std::sin(PI/sz*2));
+		for(int i = 0; i < n; i += sz){
+			CD w = CD(1, 0);
+			for(int j = 0; j < sz/2; ++j){
+				CD u = a[i+j];
+				CD v = a[i+j+sz/2]*w;
+				a[i+j] = u + v;
+				a[i+j+sz/2] = u - v;
+				w *= step;
+			}
+		}
+	}
+	if(inv) for(CD &i : a) i = std::conj(i)/CD(n, 0);
 }
 
 VCD mult(VCD a, VCD b){
@@ -35,9 +36,10 @@ VCD mult(VCD a, VCD b){
 	fft(a); fft(b);
 	VCD c(n);
 	for(int i = 0; i < n; ++i) c[i] = a[i]*b[i];
-	ifft(c);
+	fft(c, true);
 	return c;
 }
+
 template <typename T>
 VCD to_complex(std::vector<T> vec){
 	VCD ret;
