@@ -13,12 +13,12 @@ std::vector<PII> hull(std::vector<PII> vec){
 	std::vector<PII> ret;
 	ret.push_back(vec[0]);
 	for(int i = 1; i < (int)vec.size(); ++i){
-		while((int)ret.size() >= 2 && side(ret[(int)ret.size()-2], ret.back(), vec[i]) > 0) ret.pop_back(); // change to >= for all points on hull
+		while((int)ret.size() >= 2 && side(ret[(int)ret.size()-2], ret.back(), vec[i]) >= 0) ret.pop_back(); // change to > for all points on hull
 		ret.push_back(vec[i]);
 	}
 	int old = (int)ret.size();
 	for(int i = (int)vec.size()-2; i >= 0; --i){
-		while((int)ret.size() > old && side(ret[(int)ret.size()-2], ret.back(), vec[i]) > 0) ret.pop_back(); // change to >= for all points on hull
+		while((int)ret.size() > old && side(ret[(int)ret.size()-2], ret.back(), vec[i]) >= 0) ret.pop_back(); // change to > for all points on hull
 		ret.push_back(vec[i]);
 	}
 	ret.pop_back();
