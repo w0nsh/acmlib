@@ -61,3 +61,19 @@ void suffix_array(int *T, int *SA, int n, int K){
 	}
 	delete[] R; delete[] SA12; delete[] SA0; delete[] R0;
 }
+
+// lcp[0..n-2] - output
+void kasai(int *T, int *sa, int *lcp, int n){
+	int k = 0;
+	int *rank = new int[n];
+	for(int i = 0; i < n; ++i) rank[sa[i]] = i;
+	for(int i = 0; i < n; ++i, k?k--:0){
+		if(rank[i] == n-1){
+			k = 0; continue;
+		}
+		int j = sa[rank[i]+1];
+		while(i+k<n && j+k<n && T[i+k] == T[j+k]) k++;
+		lcp[rank[i]] = k;
+	}
+	delete[] rank;
+}
