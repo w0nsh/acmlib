@@ -28,9 +28,8 @@ struct SAT{
 	}
 
 	void add_and(int x, int y){
-		add_clause(x, 1, y, 1);
-		add_clause(x, 1, y, 0);
-		add_clause(x, 0, y, 1);
+		add_clause(x, 1, x, 1);
+		add_clause(y, 1, y, 1);
 	}
 	void add_nand(int x, int y){
 		add_clause(x, 0, y, 0);
@@ -39,9 +38,8 @@ struct SAT{
 		add_clause(x, 1, y, 1);
 	}
 	void add_nor(int x, int y){
-		add_clause(x, 1, y, 0);
-		add_clause(x, 0, y, 1);
-		add_clause(x, 0, y, 0);
+		add_clause(x, 0, x, 0);
+		add_clause(y, 0, y, 0);
 	}
 	void add_xor(int x, int y){
 		add_clause(x, 0, y, 0);
