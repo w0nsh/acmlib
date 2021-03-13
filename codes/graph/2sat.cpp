@@ -65,7 +65,10 @@ struct SAT{
 	}
 
 	bool solve(){
-		for(int i = 0; i < 2*n; i += 2) if(!m[i] && !m[i+1]){
+		std::vector<int> ord(n);
+		for(int i = 0; i < n; ++i) ord[i] = 2*i;
+		std::random_shuffle(ord.begin(), ord.end());
+		for(auto i : ord) if(!m[i] && !m[i+1]){
 			c=0;
 			if(!dfs(i)){
 				while(c) m[s[--c]] = 0;
